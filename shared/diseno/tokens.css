@@ -1,0 +1,34 @@
+/* Tokens de diseno compartidos por tienda/ y panel/. Cambiar aqui, no en cada app. */
+:root {
+  --color-primario: #1d4ed8;
+  --color-sobre-primario: #ffffff;
+  --color-primario-suave: #dbeafe;
+  --color-exito: #15803d;
+  --color-exito-suave: #dcfce7;
+  --color-alerta: #b45309;
+  --color-alerta-suave: #fef3c7;
+  --color-error: #b91c1c;
+  --color-error-suave: #fee2e2;
+  --color-fondo: #f8fafc;
+  --color-superficie: #ffffff;
+  --color-texto: #0f172a;
+  --color-texto-secundario: #475569;
+  --color-borde: #e2e8f0;
+
+  --fuente-ui: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --fuente-datos: ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  --radio-chip: 6px;
+  --radio-tarjeta: 12px;
+  --radio-pildora: 999px;
+
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-6: 24px;
+  --espacio-8: 32px;
+
+  --sombra-tarjeta: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --area-tactil-min: 44px;
+}

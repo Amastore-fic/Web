@@ -1,0 +1,56 @@
+stages:
+  - verificar
+  - deploy
+
+.node: &node
+  image: node:22-alpine
+
+lint_tienda:
+  <<: *node
+  stage: verificar
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev"'
+  script:
+    - cd tienda
+    - npm ci
+    - npm run lint
+    - npm run build
+
+lint_panel:
+  <<: *node
+  stage: verificar
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev"'
+  script:
+    - cd panel
+    - npm ci
+    - npm run lint
+    - npm run build
+
+deploy_tienda:
+  stage: deploy
+  tags:
+    - home-server
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - cd tienda
+    - 'test -f .env.production.local || echo "Aviso: no hay .env.production.local en tienda/, el build usara valores por defecto"'
+    - npm ci
+    - npm run build
+    - mkdir -p /srv/apps/comprasegura/tienda
+    - rsync -a --delete dist/ /srv/apps/comprasegura/tienda/dist/
+
+deploy_panel:
+  stage: deploy
+  tags:
+    - home-server
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - cd panel
+    - 'test -f .env.production.local || echo "Aviso: no hay .env.production.local en panel/, el build usara valores por defecto"'
+    - npm ci
+    - npm run build
+    - mkdir -p /srv/apps/comprasegura/panel
+    - rsync -a --delete dist/ /srv/apps/comprasegura/panel/dist/
