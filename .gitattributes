@@ -1,0 +1,6 @@
+# Finales de linea consistentes (coincide con .editorconfig y Prettier)
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
