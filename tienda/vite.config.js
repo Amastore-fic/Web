@@ -12,5 +12,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    strictPort: true,
+    // Dentro de Docker (ver docker-compose.yml) los cambios se detectan por polling
+    watch: { usePolling: process.env.DOCKER_POLLING === 'true', interval: 300 },
   },
 })
