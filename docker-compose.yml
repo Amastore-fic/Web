@@ -1,0 +1,56 @@
+name: comprasegura-web
+
+# Desarrollo: tienda y panel con recarga en caliente, sin instalar Node en la computadora.
+#   docker compose up -d
+#
+# Produccion local (build + Nginx, igual que en el servidor):
+#   docker compose --profile produccion up -d --build web
+
+x-node-dev: &node-dev
+  image: node:22-alpine
+  restart: unless-stopped
+  environment:
+    # En Windows/macOS los cambios en archivos montados no avisan al contenedor;
+    # con polling Vite los detecta igual (ver vite.config.js).
+    DOCKER_POLLING: "true"
+
+services:
+  tienda:
+    <<: *node-dev
+    container_name: comprasegura_tienda
+    working_dir: /web/tienda
+    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "${TIENDA_PORT:-5173}:5173"
+    volumes:
+      - .:/web
+      # node_modules propio del contenedor (Linux), separado del de la computadora
+      - tienda-node-modules:/web/tienda/node_modules
+
+  panel:
+    <<: *node-dev
+    container_name: comprasegura_panel
+    working_dir: /web/panel
+    command: sh -c "npm install --no-audit --no-fund && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "${PANEL_PORT:-5174}:5174"
+    volumes:
+      - .:/web
+      - panel-node-modules:/web/panel/node_modules
+
+  web:
+    profiles: [produccion]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000/api/v1}
+    image: comprasegura/web:prod
+    container_name: comprasegura_web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  tienda-node-modules:
+  panel-node-modules:
