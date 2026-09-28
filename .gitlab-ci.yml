@@ -1,56 +1,61 @@
+# Pipeline de la web
+#   CI (siempre): lint + build de tienda y panel en cada push y merge request.
+#   CD (apagado): copia los builds al servidor cuando exista uno.
+#                 Para activarlo: registrar un runner con la etiqueta "servidor" y crear la
+#                 variable DEPLOY_HABILITADO=true en Settings > CI/CD > Variables.
+
+# Un solo pipeline por cambio: en ramas con merge request abierto corre el del MR
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+
 stages:
   - verificar
   - deploy
 
-.node: &node
+.ci_node:
   image: node:22-alpine
-
-lint_tienda:
-  <<: *node
   stage: verificar
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev"'
   script:
-    - cd tienda
-    - npm ci
+    - cd "$APP"
+    - npm ci --no-audit --no-fund
     - npm run lint
+    - npm run format:check
     - npm run build
+  artifacts:
+    paths:
+      - $APP/dist/
+    expire_in: 1 week
 
-lint_panel:
-  <<: *node
-  stage: verificar
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "dev"'
-  script:
-    - cd panel
-    - npm ci
-    - npm run lint
-    - npm run build
+tienda:
+  extends: .ci_node
+  variables:
+    APP: tienda
+  cache:
+    key:
+      files: [tienda/package-lock.json]
+    paths: [tienda/node_modules/]
 
-deploy_tienda:
+panel:
+  extends: .ci_node
+  variables:
+    APP: panel
+  cache:
+    key:
+      files: [panel/package-lock.json]
+    paths: [panel/node_modules/]
+
+desplegar:
   stage: deploy
   tags:
-    - home-server
+    - servidor
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $DEPLOY_HABILITADO == "true"'
+  needs: [tienda, panel]
   script:
-    - cd tienda
-    - 'test -f .env.production.local || echo "Aviso: no hay .env.production.local en tienda/, el build usara valores por defecto"'
-    - npm ci
-    - npm run build
-    - mkdir -p /srv/apps/comprasegura/tienda
-    - rsync -a --delete dist/ /srv/apps/comprasegura/tienda/dist/
-
-deploy_panel:
-  stage: deploy
-  tags:
-    - home-server
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  script:
-    - cd panel
-    - 'test -f .env.production.local || echo "Aviso: no hay .env.production.local en panel/, el build usara valores por defecto"'
-    - npm ci
-    - npm run build
-    - mkdir -p /srv/apps/comprasegura/panel
-    - rsync -a --delete dist/ /srv/apps/comprasegura/panel/dist/
+    - mkdir -p /srv/apps/comprasegura/tienda /srv/apps/comprasegura/panel
+    - rsync -a --delete tienda/dist/ /srv/apps/comprasegura/tienda/dist/
+    - rsync -a --delete panel/dist/ /srv/apps/comprasegura/panel/dist/

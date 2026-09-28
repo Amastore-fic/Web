@@ -74,3 +74,7 @@ src/
 - El cliente nunca calcula precios, totales ni existencias: solo muestra y envía.
 - La tienda y el panel guardan su sesión en espacios separados de `localStorage`, así un vendedor puede tener abierto el panel y una cuenta de cliente en la tienda a la vez.
 - La validación de rol en el cliente es solo de navegación; la que cuenta es la de la API.
+
+## CI/CD
+
+`.gitlab-ci.yml` corre lint, formato (Prettier) y build de `tienda` y `panel` en cada push y merge request. Si falla el formato, ejecuta `npm run format` y vuelve a subir. El despliegue está apagado hasta tener servidor (ver los comentarios del archivo).
