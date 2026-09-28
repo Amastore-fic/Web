@@ -12,12 +12,37 @@ No es un monorepo con workspaces: cada app tiene su propio `package.json`. `shar
 
 ## Arrancar
 
-Con la API corriendo en `http://localhost:8000` (ver `api/README.md`):
+Requisitos: **Node.js 22 o superior** y la API corriendo en `http://localhost:8000` (ver el README del repo `api`).
+
+Cada app se corre en su propia terminal y se queda abierta mientras la usas.
+
+**Windows (cmd o PowerShell):**
+
+```bat
+cd tienda
+npm install
+npm run dev
+```
+
+```bat
+cd panel
+npm install
+npm run dev
+```
+
+**Linux / macOS / Git Bash:**
 
 ```bash
-cd tienda && npm install && cp .env.example .env && npm run dev   # http://localhost:5173
-cd panel  && npm install && cp .env.example .env && npm run dev   # http://localhost:5174/panel/
+cd tienda && npm install && npm run dev
+cd panel  && npm install && npm run dev
 ```
+
+- Tienda: `http://localhost:5173` (entra con `cliente@comprasegura.test` / `password123`)
+- Panel: `http://localhost:5174/panel/` (entra con `vendedor1@comprasegura.test` o `admin@comprasegura.test`, misma contraseña)
+
+`npm run dev` crea el `.env` automáticamente a partir de `.env.example` si no existe. Solo hay que editarlo si la API no está en `http://localhost:8000`.
+
+`npm install` solo es necesario la primera vez y cuando cambie `package-lock.json` después de un `git pull`.
 
 ## Scripts (en cada app)
 
