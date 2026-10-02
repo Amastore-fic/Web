@@ -68,6 +68,15 @@ export default function Login() {
           error={errores.password}
         />
 
+        <div className="flex justify-end -mt-2">
+          <Link 
+            to="/recuperar-password" 
+            className="text-sm font-semibold text-[#607ADB] hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
+
         {error && <AlertaError>{error}</AlertaError>}
 
         <button type="submit" disabled={enviando} className={`${claseBotonPrincipal} mt-2`}>
