@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSesion } from '../hooks/useSesion'
 import { useCategorias } from '../hooks/useCatalogo'
+import { URL_REGISTRO_VENDEDOR } from '@shared/utilidades/enlaces'
  
 const titulo = 'text-white font-semibold text-[14px] mb-3'
 const enlace = 'text-[#8A8FA3] text-[13px] hover:text-white'
@@ -69,6 +70,11 @@ export default function Footer() {
                 </li>
               </>
             )}
+            <li>
+              <a href={URL_REGISTRO_VENDEDOR} className={enlace}>
+                Vende con nosotros
+              </a>
+            </li>
           </ul>
         </div>
  

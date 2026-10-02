@@ -9,6 +9,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import { URL_REGISTRO_VENDEDOR } from '@shared/utilidades/enlaces';
 
 
 const botonNav =
@@ -151,6 +153,15 @@ export default function Header() {
                         {c.nombre}
                     </Link>
                 ))}
+
+                {/* Lleva al registro de vendedores en el panel */}
+                <a
+                    href={URL_REGISTRO_VENDEDOR}
+                    className="ml-auto flex items-center gap-1 whitespace-nowrap font-semibold text-[#9EB0F5] hover:text-white"
+                >
+                    <StorefrontOutlinedIcon sx={{ fontSize: 17 }} />
+                    Vende con nosotros
+                </a>
             </nav>
 
 
