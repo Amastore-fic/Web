@@ -10,6 +10,8 @@ import Pedido from './paginas/Pedido'
 import Pedidos from './paginas/Pedidos'
 import Producto from './paginas/Producto'
 import Registro from './paginas/Registro'
+import RecuperarPassword from './paginas/RecuperarPassword'
+import RestablecerPassword from './paginas/RestablecerPassword'
 
 
 
@@ -22,6 +24,9 @@ export default function App() {
         <Route path="productos/:id" element={<Producto />} />
         <Route path="login" element={<Login />} />
         <Route path="registro" element={<Registro />} />
+
+        <Route path="recuperar-password" element={<RecuperarPassword />} />
+        <Route path="restablecer-password" element={<RestablecerPassword />} />
 
         <Route element={<RutaProtegida />}>
           <Route path="carrito" element={<Carrito />} />
