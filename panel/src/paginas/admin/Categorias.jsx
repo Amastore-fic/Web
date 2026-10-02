@@ -25,28 +25,43 @@ export default function Categorias() {
   }
 
   return (
-    <section>
-      <h1>Categorias</h1>
+    <section className="flex max-w-2xl flex-col gap-6 p-10">
+      <h1 className="text-2xl font-semibold">Categorías</h1>
 
-      <form className="filtros" onSubmit={enviar}>
+      <form className="flex flex-wrap gap-2" onSubmit={enviar}>
+        <label htmlFor="nueva-categoria" className="sr-only">
+          Nueva categoría
+        </label>
         <input
+          id="nueva-categoria"
           required
-          placeholder="Nueva categoria"
+          placeholder="Nueva categoría"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          className="min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-3 py-2.5 text-[15px] focus:border-panel-acento focus:ring-2 focus:ring-panel-acento/40 focus:outline-none"
         />
-        <button type="submit" disabled={crear.isPending}>
+        <button
+          type="submit"
+          disabled={crear.isPending}
+          className="cursor-pointer rounded-md bg-panel-acento px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-panel-acento-hover disabled:cursor-not-allowed disabled:opacity-60"
+        >
           Agregar
         </button>
       </form>
-      {crear.error && <p className="error">{crear.error.message}</p>}
+      {crear.error && (
+        <p role="alert" className="text-sm text-red-600">
+          {crear.error.errores?.nombre?.[0] ?? crear.error.message}
+        </p>
+      )}
 
       {isPending ? (
-        <p>Cargando...</p>
+        <p className="text-gray-600">Cargando...</p>
       ) : (
-        <ul>
+        <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
           {categorias.map((c) => (
-            <li key={c.id}>{c.nombre}</li>
+            <li key={c.id} className="px-4 py-3 text-[15px]">
+              {c.nombre}
+            </li>
           ))}
         </ul>
       )}

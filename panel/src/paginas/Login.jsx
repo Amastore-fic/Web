@@ -1,21 +1,34 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { validarCorreo } from '@shared/utilidades/validaciones'
+import { Alerta, Campo, TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
 import { useSesion } from '../hooks/useSesion'
 
 export default function Login() {
   const { iniciar } = useSesion()
   const navigate = useNavigate()
-  const [correo, setCorreo] = useState('')
+  // Al venir del registro de vendedor llega el correo recien creado
+  const { registrado, negocio } = useLocation().state ?? {}
+  const [correo, setCorreo] = useState(registrado ?? '')
   const [password, setPassword] = useState('')
+  const [errores, setErrores] = useState({})
   const [error, setError] = useState(null)
   const [enviando, setEnviando] = useState(false)
 
   async function enviar(e) {
     e.preventDefault()
     setError(null)
+
+    const nuevos = {}
+    const errorCorreo = validarCorreo(correo)
+    if (errorCorreo) nuevos.correo = errorCorreo
+    if (!password) nuevos.password = 'La contraseña es obligatoria.'
+    setErrores(nuevos)
+    if (Object.keys(nuevos).length > 0) return
+
     setEnviando(true)
     try {
-      await iniciar(correo, password)
+      await iniciar(correo.trim(), password)
       navigate('/', { replace: true })
     } catch (err) {
       setError(err.message)
@@ -25,25 +38,58 @@ export default function Login() {
   }
 
   return (
-    <form className="formulario" onSubmit={enviar}>
-      <h1>Panel de vendedores y administracion</h1>
-      <label>
-        Correo
-        <input type="email" required value={correo} onChange={(e) => setCorreo(e.target.value)} />
-      </label>
-      <label>
-        Contrasena
-        <input
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+    <TarjetaAuth
+      titulo="Panel de vendedores"
+      subtitulo="Administra tus productos y consulta tus ventas."
+    >
+      <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
+        {registrado && !error && (
+          <Alerta tipo="exito">
+            Tu cuenta de vendedor{negocio ? ` para ${negocio}` : ''} quedó creada. Inicia sesión
+            para empezar.
+          </Alerta>
+        )}
+
+        <Campo
+          id="panel-login-correo"
+          etiqueta="Correo"
+          type="email"
+          autoComplete="email"
+          placeholder="nombre@dominio.com"
+          value={correo}
+          onChange={(e) => {
+            setCorreo(e.target.value)
+            setErrores((previos) => ({ ...previos, correo: undefined }))
+          }}
+          error={errores.correo}
         />
-      </label>
-      {error && <p className="error">{error}</p>}
-      <button type="submit" disabled={enviando}>
-        Entrar
-      </button>
-    </form>
+        <Campo
+          id="panel-login-password"
+          etiqueta="Contraseña"
+          type="password"
+          autoComplete="current-password"
+          autoFocus={Boolean(registrado)}
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            setErrores((previos) => ({ ...previos, password: undefined }))
+          }}
+          error={errores.password}
+        />
+
+        {error && <Alerta>{error}</Alerta>}
+
+        <button type="submit" disabled={enviando} className={`${claseBotonPrincipal} mt-2`}>
+          {enviando ? 'Entrando...' : 'Entrar'}
+        </button>
+
+        <p className="text-center text-sm text-gray-600">
+          ¿Quieres vender tus productos?{' '}
+          <Link to="/registro" className="font-semibold text-panel-acento hover:underline">
+            Crea tu cuenta de vendedor
+          </Link>
+        </p>
+      </form>
+    </TarjetaAuth>
   )
 }

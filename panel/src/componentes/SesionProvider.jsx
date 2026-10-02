@@ -9,8 +9,10 @@ export default function SesionProvider({ children }) {
 
   async function iniciar(correo, password) {
     const datos = await api.post('/auth/login', { correo, password, dispositivo: 'web-panel' })
+    // Mismo mensaje que da la API con una contrasena equivocada: asi no se revela
+    // que la cuenta existe ni que rol tiene
     if (!ROLES_PANEL.includes(datos.usuario.rol)) {
-      throw new Error('El panel es solo para vendedores y administradores.')
+      throw new Error('Credenciales incorrectas.')
     }
     sesion.guardar(datos)
     setUsuario(datos.usuario)

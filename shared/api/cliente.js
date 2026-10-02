@@ -33,7 +33,10 @@ export function crearClienteApi({ baseUrl, sesion, alNoAutenticado }) {
     const datos = respuesta.status === 204 ? null : await respuesta.json().catch(() => null)
 
     if (!respuesta.ok) {
-      if (respuesta.status === 401) {
+      // 401 con sesion = la sesion vencio: se cierra y se manda al login.
+      // 401 sin sesion (por ejemplo, contrasena equivocada en el login) solo es un error
+      // que la pantalla debe mostrar; recargar la pagina lo borraria.
+      if (respuesta.status === 401 && token) {
         sesion?.cerrar()
         alNoAutenticado?.()
       }

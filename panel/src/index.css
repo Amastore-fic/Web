@@ -1,139 +1,24 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@import 'tailwindcss';
+
+/*
+  Paleta del panel de vendedores. Mismo estilo que la tienda, pero en verde azulado
+  para distinguirlo de la tienda de clientes (azul). Para cambiar el color del panel
+  basta con editar estos valores. Se usan como clases: bg-panel-oscuro,
+  text-panel-acento, ring-panel-acento/40, etc.
+*/
+@theme {
+  --color-panel-oscuro: #10201c; /* encabezado, pie y titulos */
+  --color-panel-barra: #183029; /* barra del menu */
+  --color-panel-acento: #17836a; /* botones (texto blanco con contraste 4.6:1) */
+  --color-panel-acento-hover: #126b57;
+  --color-panel-acento-claro: #7fd8bf; /* resaltados sobre fondo oscuro */
+  --color-panel-tenue: #5f716b; /* texto secundario sobre blanco */
+  --color-panel-tenue-oscuro: #93a8a1; /* texto secundario sobre fondo oscuro */
 }
 
-body {
-  margin: 0;
-  font-family: var(--fuente-ui);
-  color: var(--color-texto);
-  background: var(--color-fondo);
-}
-
-a {
-  color: var(--color-primario);
-}
-
-.encabezado {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-4);
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--espacio-3) var(--espacio-6);
-  background: var(--color-superficie);
-  border-bottom: 1px solid var(--color-borde);
-}
-
-.encabezado nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-4);
-  align-items: center;
-}
-
-.marca {
-  font-weight: 700;
-  font-size: 1.25rem;
-  text-decoration: none;
-}
-
-.contenido {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--espacio-6) var(--espacio-4);
-}
-
-.filtros {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--espacio-3);
-  margin-bottom: var(--espacio-6);
-}
-
-.rejilla {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: var(--espacio-4);
-  padding: 0;
-  list-style: none;
-}
-
-.tarjeta {
-  padding: var(--espacio-4);
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-tarjeta);
-  box-shadow: var(--sombra-tarjeta);
-}
-
-.tarjeta h2 {
-  margin: 0 0 var(--espacio-2);
-  font-size: 1.05rem;
-}
-
-.precio {
-  font-weight: 700;
-  font-size: 1.1rem;
-  font-family: var(--fuente-datos);
-}
-
-.secundario {
-  color: var(--color-texto-secundario);
-  font-size: 0.9rem;
-}
-
-.ficha {
-  display: grid;
-  gap: var(--espacio-3);
-  max-width: 720px;
-}
-
-.formulario {
-  display: grid;
-  gap: var(--espacio-4);
-  max-width: 420px;
-}
-
-.formulario label {
-  display: grid;
-  gap: var(--espacio-1);
-}
-
-input,
-select,
-button {
-  min-height: var(--area-tactil-min);
-  padding: 0 var(--espacio-3);
-  font: inherit;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-chip);
-}
-
-button {
-  color: var(--color-sobre-primario);
-  background: var(--color-primario);
-  border: none;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.boton-texto {
-  color: var(--color-primario);
-  background: none;
-}
-
-.error {
-  color: var(--color-error);
-}
-
-.aviso {
-  padding: var(--espacio-4);
-  background: var(--color-alerta-suave);
-  border-radius: var(--radio-tarjeta);
+@layer base {
+  body {
+    background: #ffffff;
+    color: #111827;
+  }
 }
