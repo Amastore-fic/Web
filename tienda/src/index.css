@@ -1,4 +1,6 @@
-*,
+@import "tailwindcss";
+
+/* *,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -137,3 +139,4 @@ button:disabled {
   background: var(--color-alerta-suave);
   border-radius: var(--radio-tarjeta);
 }
+ */

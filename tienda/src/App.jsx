@@ -11,6 +11,8 @@ import Pedidos from './paginas/Pedidos'
 import Producto from './paginas/Producto'
 import Registro from './paginas/Registro'
 
+
+
 // Flujo principal del MVP: catalogo -> ficha -> carrito -> checkout (direccion + pago) -> pedido
 export default function App() {
   return (
