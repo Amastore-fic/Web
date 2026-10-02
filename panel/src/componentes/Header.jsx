@@ -3,12 +3,17 @@ import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStore
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import PersonIcon from '@mui/icons-material/Person'
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
+import { URL_TIENDA } from '@shared/utilidades/enlaces'
 import { useSesion } from '../hooks/useSesion'
 import { MENU, NOMBRE_SECCION } from './menuPanel'
 
 // Mismo estilo que tienda/src/componentes/Header.jsx
 const botonNav =
   'flex items-center justify-center gap-2 bg-panel-acento text-white text-[13px] font-semibold rounded-md px-3 py-2 whitespace-nowrap cursor-pointer hover:bg-panel-acento-hover'
+
+const botonSecundario =
+  'flex items-center justify-center gap-2 border border-gray-500 text-gray-200 text-[13px] font-semibold rounded-md px-3 py-2 whitespace-nowrap hover:bg-panel-barra hover:text-white'
 
 export default function Header() {
   const { usuario, cerrar } = useSesion()
@@ -33,6 +38,10 @@ export default function Header() {
 
         {/* Acciones */}
         <div className="flex flex-wrap gap-2">
+          <a href={URL_TIENDA} className={botonSecundario}>
+            <StorefrontOutlinedIcon sx={{ fontSize: 19 }} />
+            Ir a la tienda
+          </a>
           {usuario ? (
             <button type="button" onClick={salir} className={botonNav}>
               <LogoutRoundedIcon sx={{ fontSize: 19 }} />

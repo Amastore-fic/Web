@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { URL_TIENDA } from '@shared/utilidades/enlaces'
 import { useSesion } from '../hooks/useSesion'
 import { MENU } from './menuPanel'
 
@@ -16,7 +17,7 @@ export default function Footer() {
 
   return (
     <footer className="mt-8 border-t border-gray-500 bg-panel-oscuro pb-4 text-white">
-      <div className="grid grid-cols-2 gap-6 px-3.5 py-8 sm:px-5 lg:grid-cols-3 lg:px-8">
+      <div className="grid grid-cols-2 gap-6 px-3.5 py-8 sm:px-5 lg:grid-cols-4 lg:px-8">
         {/* Panel */}
         <div>
           <h3 className={titulo}>Panel</h3>
@@ -43,6 +44,18 @@ export default function Footer() {
                 </li>
               </>
             )}
+          </ul>
+        </div>
+
+        {/* Tienda */}
+        <div>
+          <h3 className={titulo}>Compradores</h3>
+          <ul className="space-y-2">
+            <li>
+              <a href={URL_TIENDA} className={enlace}>
+                Ir a la tienda
+              </a>
+            </li>
           </ul>
         </div>
 

@@ -1,19 +1,28 @@
 import { useState } from 'react'
+import { URL_TIENDA } from '@shared/utilidades/enlaces'
+import { ROLES_PANEL, ROLES_TIENDA, urlConSesion } from '@shared/sesion/traspaso'
 import { api, sesion } from '../api'
 import { SesionContext } from '../hooks/useSesion'
-
-const ROLES_PANEL = ['vendedor', 'administrador']
 
 export default function SesionProvider({ children }) {
   const [usuario, setUsuario] = useState(() => sesion.usuario())
 
   async function iniciar(correo, password) {
     const datos = await api.post('/auth/login', { correo, password, dispositivo: 'web-panel' })
-    // Mismo mensaje que da la API con una contrasena equivocada: asi no se revela
-    // que la cuenta existe ni que rol tiene
-    if (!ROLES_PANEL.includes(datos.usuario.rol)) {
+    const { rol } = datos.usuario
+
+    // Los clientes compran en la tienda: se les manda alla con su sesion
+    if (ROLES_TIENDA.includes(rol)) {
+      window.location.assign(urlConSesion(URL_TIENDA, datos.token))
+      // La pagina se va a la tienda; la promesa no termina para que el login no siga
+      return new Promise(() => {})
+    }
+
+    // Cualquier otro rol: mismo mensaje que una contrasena equivocada, sin revelar nada
+    if (!ROLES_PANEL.includes(rol)) {
       throw new Error('Credenciales incorrectas.')
     }
+
     sesion.guardar(datos)
     setUsuario(datos.usuario)
     return datos.usuario
