@@ -7,6 +7,7 @@ import PedidosAdmin from './paginas/admin/Pedidos'
 import Usuarios from './paginas/admin/Usuarios'
 import Login from './paginas/Login'
 import NoEncontrado from './paginas/NoEncontrado'
+import RegistroVendedor from './paginas/RegistroVendedor'
 import MisProductos from './paginas/vendedor/MisProductos'
 import Ventas from './paginas/vendedor/Ventas'
 
@@ -28,6 +29,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<Inicio />} />
         <Route path="login" element={<Login />} />
+        <Route path="registro" element={<RegistroVendedor />} />
 
         <Route path="vendedor" element={<RutaPorRol rol="vendedor" />}>
           <Route path="productos" element={<MisProductos />} />
