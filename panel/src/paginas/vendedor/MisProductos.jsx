@@ -6,7 +6,7 @@ export default function MisProductos() {
     <Pendiente titulo="Mis productos">
       Tabla de publicaciones (activas y retiradas) con acciones editar y retirar, y formulario de
       alta con titulo, descripcion, precio, existencias, categoria e imagen. Todos los campos son
-      obligatorios salvo la imagen.
+      obligatorios, y la imagen del producto debe ser una foto real.
     </Pendiente>
   )
 }
