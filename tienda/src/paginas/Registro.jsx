@@ -11,8 +11,8 @@ import {
   validarPassword,
   validarTelefono,
 } from '@shared/utilidades/validaciones'
-import { api } from '../api'
 import { AlertaError, Campo, TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
+import { useSesion } from '../hooks/useSesion'
 
 // completo: ocupa las dos columnas en pantallas medianas y grandes
 // filtro: limpia lo que se escribe; validar: devuelve el mensaje de error o null
@@ -81,6 +81,7 @@ function validarTodo(datos) {
 }
 
 export default function Registro() {
+  const { registrar } = useSesion()
   const navigate = useNavigate()
   const [datos, setDatos] = useState({})
   // Un campo muestra su error despues de salir de el, o despues de intentar enviar
@@ -119,13 +120,14 @@ export default function Registro() {
 
     setEnviando(true)
     try {
-      await api.post('/auth/registro', {
+      // Al crear la cuenta ya queda con sesion iniciada: no hay que volver a escribir los datos
+      await registrar({
         ...datos,
         nombre: datos.nombre.trim(),
         apellido: datos.apellido.trim(),
         correo: datos.correo.trim(),
       })
-      navigate('/login')
+      navigate('/', { replace: true })
     } catch (err) {
       const deApi = Object.fromEntries(
         Object.entries(err.errores ?? {}).map(([campo, mensajes]) => [

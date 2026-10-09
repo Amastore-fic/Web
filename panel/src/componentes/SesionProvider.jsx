@@ -28,6 +28,17 @@ export default function SesionProvider({ children }) {
     return datos.usuario
   }
 
+  // Crea la cuenta de vendedor y deja la sesion iniciada (la API responde igual que el login)
+  async function registrar(datosCuenta) {
+    const datos = await api.post('/auth/registro-vendedor', {
+      ...datosCuenta,
+      dispositivo: 'web-panel',
+    })
+    sesion.guardar(datos)
+    setUsuario(datos.usuario)
+    return datos.usuario
+  }
+
   async function cerrar() {
     await api.post('/auth/logout').catch(() => {})
     sesion.cerrar()
@@ -35,6 +46,8 @@ export default function SesionProvider({ children }) {
   }
 
   return (
-    <SesionContext.Provider value={{ usuario, iniciar, cerrar }}>{children}</SesionContext.Provider>
+    <SesionContext.Provider value={{ usuario, iniciar, registrar, cerrar }}>
+      {children}
+    </SesionContext.Provider>
   )
 }
