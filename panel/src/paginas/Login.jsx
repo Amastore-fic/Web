@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { validarCorreo } from '@shared/utilidades/validaciones'
 import { Alerta, Campo, TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
 import { useSesion } from '../hooks/useSesion'
@@ -7,9 +7,7 @@ import { useSesion } from '../hooks/useSesion'
 export default function Login() {
   const { iniciar } = useSesion()
   const navigate = useNavigate()
-  // Al venir del registro de vendedor llega el correo recien creado
-  const { registrado, negocio } = useLocation().state ?? {}
-  const [correo, setCorreo] = useState(registrado ?? '')
+  const [correo, setCorreo] = useState('')
   const [password, setPassword] = useState('')
   const [errores, setErrores] = useState({})
   const [error, setError] = useState(null)
@@ -43,13 +41,6 @@ export default function Login() {
       subtitulo="Administra tus productos y consulta tus ventas."
     >
       <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
-        {registrado && !error && (
-          <Alerta tipo="exito">
-            Tu cuenta de vendedor{negocio ? ` para ${negocio}` : ''} quedó creada. Inicia sesión
-            para empezar.
-          </Alerta>
-        )}
-
         <Campo
           id="panel-login-correo"
           etiqueta="Correo"
@@ -68,7 +59,6 @@ export default function Login() {
           etiqueta="Contraseña"
           type="password"
           autoComplete="current-password"
-          autoFocus={Boolean(registrado)}
           value={password}
           onChange={(e) => {
             setPassword(e.target.value)

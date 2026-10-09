@@ -11,7 +11,6 @@ import {
   validarPassword,
   validarTelefono,
 } from '@shared/utilidades/validaciones'
-import { api } from '../api'
 import {
   Alerta,
   Campo,
@@ -147,7 +146,7 @@ function prepararEnvio(datos) {
 }
 
 export default function RegistroVendedor() {
-  const { usuario } = useSesion()
+  const { usuario, registrar } = useSesion()
   const navigate = useNavigate()
   const [datos, setDatos] = useState({})
   // Un campo muestra su error despues de salir de el, o despues de intentar enviar
@@ -190,14 +189,9 @@ export default function RegistroVendedor() {
 
     setEnviando(true)
     try {
-      const respuesta = await api.post('/auth/registro-vendedor', prepararEnvio(datos))
-      navigate('/login', {
-        replace: true,
-        state: {
-          registrado: respuesta.usuario.correo,
-          negocio: respuesta.usuario.vendedor?.nombre_comercial,
-        },
-      })
+      // Al crear la cuenta ya queda con sesion iniciada y entra directo a su panel
+      await registrar(prepararEnvio(datos))
+      navigate('/', { replace: true })
     } catch (err) {
       const deApi = Object.fromEntries(
         Object.entries(err.errores ?? {}).map(([campo, mensajes]) => [
