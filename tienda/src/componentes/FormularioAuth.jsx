@@ -18,22 +18,36 @@ export function TarjetaAuth({ titulo, subtitulo, children, ancho = 'max-w-md' })
   )
 }
 
-// Campo con etiqueta y mensaje de error debajo
-export function Campo({ id, etiqueta, error, ...props }) {
+// Campo con etiqueta y mensaje de error debajo.
+// multilinea: usa <textarea>; opciones: usa <select> con esas opciones.
+export function Campo({ id, etiqueta, error, multilinea = false, opciones, ...props }) {
+  const Control = opciones ? 'select' : multilinea ? 'textarea' : 'input'
+
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-sm font-semibold text-[#1B1F2E]">
         {etiqueta}
       </label>
-      <input
+      <Control
         id={id}
         className={`rounded-md border bg-white px-3 py-2.5 text-[15px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#607ADB]/40 ${
-          error ? 'border-red-500' : 'border-gray-300 focus:border-[#607ADB]'
-        }`}
+          multilinea ? 'min-h-24 resize-y' : ''
+        } ${error ? 'border-red-500' : 'border-gray-300 focus:border-[#607ADB]'}`}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
         {...props}
-      />
+      >
+        {opciones && (
+          <>
+            <option value="">Elige una opción</option>
+            {opciones.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </>
+        )}
+      </Control>
       {error && (
         <p id={`${id}-error`} className="text-sm text-red-600">
           {error}
@@ -49,6 +63,18 @@ export function AlertaError({ children }) {
     <p
       role="alert"
       className="rounded-md border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+    >
+      {children}
+    </p>
+  )
+}
+
+// Mensaje de exito general del formulario
+export function AlertaExito({ children }) {
+  return (
+    <p
+      role="status"
+      className="rounded-md border border-green-200 bg-green-50 px-3 py-2.5 text-sm text-green-800"
     >
       {children}
     </p>

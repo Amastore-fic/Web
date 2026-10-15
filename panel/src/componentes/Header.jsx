@@ -1,4 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded'
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined'
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
@@ -43,10 +44,16 @@ export default function Header() {
             Ir a la tienda
           </a>
           {usuario ? (
-            <button type="button" onClick={salir} className={botonNav}>
-              <LogoutRoundedIcon sx={{ fontSize: 19 }} />
-              Salir ({usuario.nombre})
-            </button>
+            <>
+              <NavLink to="/perfil" className={botonSecundario}>
+                <AccountCircleRoundedIcon sx={{ fontSize: 19 }} />
+                Mi cuenta
+              </NavLink>
+              <button type="button" onClick={salir} className={botonNav}>
+                <LogoutRoundedIcon sx={{ fontSize: 19 }} />
+                Salir ({usuario.nombre})
+              </button>
+            </>
           ) : (
             <>
               <NavLink to="/login" className={botonNav}>

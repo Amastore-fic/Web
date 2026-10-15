@@ -51,6 +51,23 @@ export function validarConfirmacion(valor, password) {
   return null
 }
 
+// Texto libre con largo minimo y maximo; requerido = false lo deja opcional.
+// etiqueta lleva su articulo ("La calle") para que los mensajes concuerden.
+export function validarTexto(valor, etiqueta, { requerido = true, minimo = 1, maximo = 255 } = {}) {
+  const v = (valor ?? '').trim()
+  if (!v) return requerido ? `Escribe ${etiqueta.toLowerCase()}.` : null
+  if (v.length < minimo) return `${etiqueta} debe tener al menos ${minimo} caracteres.`
+  if (v.length > maximo) return `${etiqueta} no puede tener más de ${maximo} caracteres.`
+  return null
+}
+
+export function validarCodigoPostal(valor) {
+  const v = (valor ?? '').trim()
+  if (!v) return 'El código postal es obligatorio.'
+  if (!/^\d{5}$/.test(v)) return 'El código postal debe tener 5 dígitos.'
+  return null
+}
+
 // Filtros para escribir: evitan que entren caracteres no permitidos
 export const soloLetras = (v) => v.replace(/[^\p{L} '-]/gu, '')
 export const soloDigitos = (v, max = 10) => v.replace(/\D/g, '').slice(0, max)

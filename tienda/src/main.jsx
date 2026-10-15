@@ -7,6 +7,7 @@ import { ROLES_TIENDA, recibirSesion } from '@shared/sesion/traspaso'
 import './index.css'
 import { api, sesion } from './api'
 import App from './App.jsx'
+import DireccionEnvioProvider from './componentes/DireccionEnvioProvider.jsx'
 import SesionProvider from './componentes/SesionProvider.jsx'
 
 const queryClient = new QueryClient({
@@ -18,9 +19,11 @@ function montar() {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <SesionProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <DireccionEnvioProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </DireccionEnvioProvider>
         </SesionProvider>
       </QueryClientProvider>
     </StrictMode>
