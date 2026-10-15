@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { URL_PANEL } from '@shared/utilidades/enlaces'
 import { ROLES_PANEL, ROLES_TIENDA, urlConSesion } from '@shared/sesion/traspaso'
 import { api, sesion } from '../api'
 import { SesionContext } from '../hooks/useSesion'
 
 export default function SesionProvider({ children }) {
+  const queryClient = useQueryClient()
   const [usuario, setUsuario] = useState(() => sesion.usuario())
 
   async function iniciar(correo, password) {
@@ -40,10 +42,18 @@ export default function SesionProvider({ children }) {
     await api.post('/auth/logout').catch(() => {})
     sesion.cerrar()
     setUsuario(null)
+    // Que el siguiente usuario que entre no vea datos en cache del anterior (perfil, direcciones)
+    queryClient.clear()
+  }
+
+  // Despues de editar el perfil: conserva el token y guarda los datos nuevos
+  function actualizarUsuario(nuevo) {
+    sesion.guardar({ token: sesion.token(), usuario: nuevo })
+    setUsuario(nuevo)
   }
 
   return (
-    <SesionContext.Provider value={{ usuario, iniciar, registrar, cerrar }}>
+    <SesionContext.Provider value={{ usuario, iniciar, registrar, cerrar, actualizarUsuario }}>
       {children}
     </SesionContext.Provider>
   )

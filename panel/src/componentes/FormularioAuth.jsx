@@ -35,9 +35,9 @@ export function Seccion({ titulo, descripcion, children }) {
 }
 
 // Campo con etiqueta, ayuda opcional y mensaje de error debajo.
-// multilinea: usa <textarea> en lugar de <input>.
-export function Campo({ id, etiqueta, error, ayuda, multilinea = false, ...props }) {
-  const Control = multilinea ? 'textarea' : 'input'
+// multilinea: usa <textarea> en lugar de <input>; opciones: usa <select> con esas opciones.
+export function Campo({ id, etiqueta, error, ayuda, multilinea = false, opciones, ...props }) {
+  const Control = opciones ? 'select' : multilinea ? 'textarea' : 'input'
   const descripciones = [error && `${id}-error`, ayuda && `${id}-ayuda`].filter(Boolean).join(' ')
 
   return (
@@ -53,7 +53,18 @@ export function Campo({ id, etiqueta, error, ayuda, multilinea = false, ...props
         aria-invalid={error ? true : undefined}
         aria-describedby={descripciones || undefined}
         {...props}
-      />
+      >
+        {opciones && (
+          <>
+            <option value="">Elige una opción</option>
+            {opciones.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </>
+        )}
+      </Control>
       {ayuda && !error && (
         <p id={`${id}-ayuda`} className="text-xs text-panel-tenue">
           {ayuda}

@@ -12,6 +12,11 @@ import Producto from './paginas/Producto'
 import Registro from './paginas/Registro'
 import RecuperarPassword from './paginas/RecuperarPassword'
 import RestablecerPassword from './paginas/RestablecerPassword'
+import DatosPersonales from './paginas/cuenta/DatosPersonales'
+import Direcciones from './paginas/cuenta/Direcciones'
+import MetodosPago from './paginas/cuenta/MetodosPago'
+import MiCuenta from './paginas/cuenta/MiCuenta'
+import Seguridad from './paginas/cuenta/Seguridad'
 
 
 
@@ -33,6 +38,11 @@ export default function App() {
           <Route path="checkout" element={<Checkout />} />
           <Route path="pedidos" element={<Pedidos />} />
           <Route path="pedidos/:id" element={<Pedido />} />
+          <Route path="perfil" element={<MiCuenta />} />
+          <Route path="perfil/datos" element={<DatosPersonales />} />
+          <Route path="perfil/seguridad" element={<Seguridad />} />
+          <Route path="perfil/direcciones" element={<Direcciones />} />
+          <Route path="perfil/pagos" element={<MetodosPago />} />
         </Route>
 
         <Route path="*" element={<NoEncontrado />} />

@@ -1,11 +1,12 @@
 import { Link, NavLink, Outlet, useNavigate, useSearchParams  } from 'react-router-dom'
 import { useSesion } from '../hooks/useSesion'
 import { useCategorias } from '../hooks/useCatalogo'
+import SelectorDireccion from './SelectorDireccion'
 
 import LocalGroceryStoreOutlinedIcon from '@mui/icons-material/LocalGroceryStoreOutlined';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import PersonIcon from '@mui/icons-material/Person';
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
@@ -14,7 +15,7 @@ import { URL_REGISTRO_VENDEDOR } from '@shared/utilidades/enlaces';
 
 
 const botonNav =
-    "flex items-center justify-center gap-2 w-[33%] bg-[#607ADB] text-white text-[13px] font-semibold rounded-md px-2 py-2 whitespace-nowrap cursor-pointer hover:bg-[#4f68c4]";
+    "flex flex-1 items-center justify-center gap-2 bg-[#607ADB] text-white text-[13px] font-semibold rounded-md px-2 py-2 whitespace-nowrap cursor-pointer hover:bg-[#4f68c4]";
 
 
 export default function Header() {
@@ -62,18 +63,7 @@ export default function Header() {
 
                 {/* Boton de direccion */}
 
-                {usuario && (
-                    <button className="flex items-center justify-center bg-[#607ADB] text-white text-[13px] sm:text-xs font-semibold rounded-[7px] px-4 py-2 sm:px-3 sm:py-2 cursor-pointer">
-                        <LocationOnOutlinedIcon sx={{ fontSize: 20 }} />
-                        <div>
-                            <p>Enviar a <br />
-                                CP 89234
-                            </p>
-
-                        </div>
-
-                    </button>
-                )}
+                {usuario && <SelectorDireccion />}
 
 
 
@@ -102,7 +92,7 @@ export default function Header() {
 
                 {/* Acciones nav */}
 
-                <div className="flex gap-2 basis-full sm:basis-auto sm:w-90 order-5">
+                <div className="flex gap-2 basis-full sm:basis-auto order-5">
                     {usuario ? (
                         <>
                             <NavLink to="/pedidos" className={botonNav}>
@@ -112,6 +102,10 @@ export default function Header() {
                             <NavLink to="/carrito" className={botonNav}>
                                 <ShoppingCartRoundedIcon sx={{ fontSize: 20 }} />
                                 Carrito
+                            </NavLink>
+                            <NavLink to="/perfil" className={botonNav}>
+                                <AccountCircleRoundedIcon sx={{ fontSize: 20 }} />
+                                Mi cuenta
                             </NavLink>
                             <button type="button" onClick={salir} className={botonNav}>
                                 <PersonIcon sx={{ fontSize: 20 }} />
