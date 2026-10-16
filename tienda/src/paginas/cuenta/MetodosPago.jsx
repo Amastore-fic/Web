@@ -14,7 +14,7 @@ export default function MetodosPago() {
             role="status"
             className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800"
           >
-            Próximamente: por ahora el pago se captura al confirmar cada compra.
+            Próximamente
           </p>
 
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

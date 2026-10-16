@@ -31,7 +31,7 @@ export default function Header() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-medium whitespace-nowrap">
           <LocalGroceryStoreOutlinedIcon sx={{ fontSize: 20 }} />
-          <p className="text-[20px]">CompraSegura</p>
+          <p className="text-[20px]">Amastore</p>
           <span className="rounded bg-panel-barra px-2 py-0.5 text-[11px] font-semibold text-gray-200">
             {NOMBRE_SECCION[usuario?.rol] ?? 'Vendedores'}
           </span>

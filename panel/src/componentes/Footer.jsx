@@ -69,8 +69,8 @@ export default function Footer() {
               </li>
             ))}
             <li>
-              <a href="mailto:vendedores@comprasegura.com" className={enlace}>
-                vendedores@comprasegura.com
+              <a href="mailto:vendedores@amastore.com" className={enlace}>
+                vendedores@amastore.com
               </a>
             </li>
           </ul>
@@ -92,7 +92,7 @@ export default function Footer() {
       {/* Franja inferior */}
       <div className="flex flex-col items-center justify-between gap-3 border-t border-gray-700 px-3.5 py-4 sm:flex-row sm:px-5 lg:px-8">
         <p className="text-[12px] text-panel-tenue-oscuro">
-          © {new Date().getFullYear()} CompraSegura. Todos los derechos reservados.
+          © {new Date().getFullYear()} Amastore. Todos los derechos reservados.
         </p>
       </div>
     </footer>

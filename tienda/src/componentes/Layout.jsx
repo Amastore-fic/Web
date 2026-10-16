@@ -18,7 +18,7 @@ export default function Layout() {
         <Header />
         {/* <header className="encabezado">
         <Link to="/" className="marca">
-          CompraSegura
+          Amastore
         </Link>
         <nav>
           <NavLink to="/">Catalogo</NavLink>
