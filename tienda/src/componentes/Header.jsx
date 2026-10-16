@@ -56,7 +56,7 @@ export default function Header() {
                     <LocalGroceryStoreOutlinedIcon sx={{ fontSize: 20 }} />
 
                     <p className="text-[20px] sm:text-[20px] lg:text-[20px]">
-                        CompraSegura
+                        Amastore
                     </p>
 
                 </Link>

@@ -88,8 +88,8 @@ export default function Footer() {
               </li>
             ))}
             <li>
-              <a href="mailto:contacto@comprasegura.com" className={enlace}>
-                contacto@comprasegura.com
+              <a href="mailto:contacto@amastore.com" className={enlace}>
+                contacto@amastore.com
               </a>
             </li>
           </ul>
@@ -111,7 +111,7 @@ export default function Footer() {
       {/* Franja inferior */}
       <div className="border-t border-gray-700 px-3.5 sm:px-5 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
         <p className="text-[#8A8FA3] text-[12px]">
-          © {new Date().getFullYear()} CompraSegura. Todos los derechos reservados.
+          © {new Date().getFullYear()} Amastore. Todos los derechos reservados.
         </p>
         <ul className="flex gap-2">
           {pagos.map((p) => (
