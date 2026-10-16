@@ -3,10 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { formatearMoneda } from '@shared/utilidades/formato'
 import { useCategorias, useProductos } from '../hooks/useCatalogo'
 
-
 function BannerOfertas() {
   return (
-    <div className=" mx-3.5 sm:mx-5 lg:mx-8 mb-8 mt-10 rounded-lg overflow-hidden bg-gradient-to-r from-[#607ADB] to-[#1B1F2E] text-white p-8 sm:p-8 lg:p-10 flex items-center justify-between">
+    <div className="mx-3.5 sm:mx-5 lg:mx-8 mb-8 mt-10 rounded-lg overflow-hidden bg-gradient-to-r from-[#607ADB] to-[#1B1F2E] text-white p-8 sm:p-8 lg:p-10 flex items-center justify-between">
       <div>
         <p className="text-xs sm:text-sm font-semibold uppercase tracking-wide opacity-80">
           Ofertas de la semana
@@ -27,15 +26,27 @@ function BannerOfertas() {
 }
 
 function ProductCard({ producto }) {
-  const { id, titulo, precio, categoria, vendedor, rating, reviews } = producto
+  const { id, titulo, precio, categoria, vendedor, rating, reviews, imagen_url } = producto
 
   return (
     <Link
       to={`/productos/${id}`}
-      className="block bg-[#1B1F2E] rounded-lg overflow-hidden hover:ring-2 hover:ring-[#6f81c0b7]"
+      className="block bg-[#1B1F2E] rounded-lg overflow-hidden hover:ring-2 hover:ring-[#6f81c0b7] transition flex flex-col justify-between"
     >
-      <div className="bg-[#D9D9D9] h-35 sm:h-35 lg:h-35 w-full" />
-      <div className="p-2.5 flex flex-col justify-between">
+      {/* Contenedor de la imagen corregido para mostrar la foto real o un respaldo si no tiene */}
+      <div className="bg-[#D9D9D9] h-36 w-full overflow-hidden flex items-center justify-center">
+        {imagen_url ? (
+          <img
+            src={imagen_url}
+            alt={titulo}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <span className="text-xs text-gray-500 italic">Sin imagen</span>
+        )}
+      </div>
+
+      <div className="p-2.5 flex flex-col justify-between flex-grow">
         <p className="text-white text-[16px] line-clamp-2 min-h-[2lh]">{titulo}</p>
 
         {rating != null && (
@@ -44,8 +55,6 @@ function ProductCard({ producto }) {
             {reviews != null && ` (${reviews})`}
           </p>
         )}
-
-
 
         <p className="text-[#7C93FF] font-bold text-[17px] mt-1">
           {formatearMoneda(precio)}
@@ -73,10 +82,6 @@ function ProductGrid({
 }
 
 export default function Catalogo() {
-  /* const [buscar, setBuscar] = useState('')
-  const [categoria, setCategoria] = useState('')
-  const { data: categorias } = useCategorias() */
-
   const [params] = useSearchParams()
   const buscar = params.get('buscar') ?? ''
   const categoria = params.get('categoria') ?? ''
@@ -88,53 +93,14 @@ export default function Catalogo() {
 
   return (
     <section>
-      {/* <h1>Catalogo</h1> */}
-
-      {/* <div className="filtros">
-        <input
-          type="search"
-          placeholder="Buscar por nombre"
-          value={buscar}
-          onChange={(e) => setBuscar(e.target.value)}
-        />
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-          <option value="">Todas las categorias</option>
-          {categorias?.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.nombre}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
-      {/* {isPending && <p>Cargando productos...</p>}
-      {error && <p className="error">{error.message}</p>}
-      {data?.data.length === 0 && <p>No hay productos que coincidan.</p>}
-
-      <ul className="rejilla">
-        {data?.data.map((p) => (
-          <li key={p.id} className="tarjeta">
-            <Link to={`/productos/${p.id}`}>
-              <h2>{p.titulo}</h2>
-            </Link>
-            <p className="precio">{formatearMoneda(p.precio)}</p>
-            <p className="secundario">
-              {p.categoria?.nombre} · Vendido por {p.vendedor?.nombre_comercial}
-            </p>
-          </li>
-        ))}
-      </ul> */}
-
-      
-
       {!hayFiltros && <BannerOfertas />}
       
-      <p className="px-3.5 sm:px-5 lg:px-8 text-[18px] font-bold ">Productos en tendencia</p>
+      <p className="px-3.5 sm:px-5 lg:px-8 text-[18px] font-bold text-white">Productos en tendencia</p>
 
-      {isPending && <p className="px-3.5 sm:px-5 lg:px-8">Cargando productos...</p>}
-      {error && <p className="error px-3.5 sm:px-5 lg:px-8">{error.message}</p>}
+      {isPending && <p className="px-3.5 sm:px-5 lg:px-8 text-gray-400 mt-4">Cargando productos...</p>}
+      {error && <p className="error px-3.5 sm:px-5 lg:px-8 mt-4 text-red-400">{error.message}</p>}
       {data && productos.length === 0 && (
-        <p className="px-3.5 sm:px-5 lg:px-8">No hay productos que coincidan.</p>
+        <p className="px-3.5 sm:px-5 lg:px-8 text-gray-400 mt-4">No hay productos que coincidan.</p>
       )}
 
       {productos.length > 0 && <ProductGrid productos={productos} />}
