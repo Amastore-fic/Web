@@ -4,7 +4,8 @@ import Pendiente from '../componentes/Pendiente'
 export default function Pedidos() {
   return (
     <Pendiente titulo="Mis pedidos">
-      Listar pedidos con folio, fecha, total y estado; cada uno enlaza a /pedidos/:id.
+      {/* Listar pedidos con folio, fecha, total y estado; cada uno enlaza a /pedidos/:id. */}
+      Aqui se mostraran los pedidos con folio, fecha y su estado
     </Pendiente>
   )
 }

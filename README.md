@@ -1,4 +1,4 @@
-# CompraSegura · Web
+# Amastore · Web
 
 Dos aplicaciones React (Vite) independientes que comparten código vía `shared/`.
 
@@ -10,9 +10,42 @@ Dos aplicaciones React (Vite) independientes que comparten código vía `shared/
 
 No es un monorepo con workspaces: cada app tiene su propio `package.json`. `shared/` no se instala, se importa por alias de Vite.
 
-## Arrancar
+## Arrancar con Docker (recomendado)
 
-Requisitos: **Node.js 22 o superior** y la API corriendo en `http://localhost:8000` (ver el README del repo `api`).
+Requisitos: **Docker Desktop** abierto y la API corriendo en `http://localhost:8000` (ver el README del repo `api`). No hace falta instalar Node.
+
+Estos comandos son iguales en Windows, Linux y macOS:
+
+```bash
+docker compose up -d
+```
+
+- Tienda: `http://localhost:5173` (entra con `cliente@comprasegura.test` / `password123`)
+- Panel: `http://localhost:5174/panel/` (entra con `vendedor1@comprasegura.test` o `admin@comprasegura.test`, misma contraseña)
+
+La primera vez tarda uno o dos minutos porque instala las dependencias dentro del contenedor. Los cambios que hagas en el código se ven al instante en el navegador, igual que con `npm run dev`.
+
+| Qué | Comando |
+|---|---|
+| Encender | `docker compose up -d` |
+| Apagar | `docker compose down` |
+| Ver logs | `docker compose logs -f tienda` (o `panel`) |
+| Instalar una dependencia nueva | `docker compose exec tienda npm install <paquete>` (o `panel`) |
+| Después de un `git pull` que cambió `package-lock.json` | `docker compose restart` |
+
+### Versión de producción (Nginx)
+
+`Dockerfile` compila las dos apps y las sirve con Nginx en un solo contenedor: la tienda en `/` y el panel en `/panel/`. Es la imagen que se usará en el servidor. Para probarla localmente en `http://localhost:8080`:
+
+```bash
+docker compose --profile produccion up -d --build web
+```
+
+La URL de la API queda fija al compilar. Para otro servidor se pasa con `VITE_API_URL`, por ejemplo `docker build --build-arg VITE_API_URL=https://mi-dominio/api/v1 -t comprasegura/web .`
+
+## Arrancar sin Docker
+
+Requisitos: **Node.js 22 o superior** y la API corriendo en `http://localhost:8000`.
 
 Cada app se corre en su propia terminal y se queda abierta mientras la usas.
 
@@ -37,8 +70,7 @@ cd tienda && npm install && npm run dev
 cd panel  && npm install && npm run dev
 ```
 
-- Tienda: `http://localhost:5173` (entra con `cliente@comprasegura.test` / `password123`)
-- Panel: `http://localhost:5174/panel/` (entra con `vendedor1@comprasegura.test` o `admin@comprasegura.test`, misma contraseña)
+Las URLs son las mismas que con Docker. No se pueden usar las dos formas a la vez porque ocupan los mismos puertos: apaga los contenedores (`docker compose down`) antes de usar `npm run dev`.
 
 `npm run dev` crea el `.env` automáticamente a partir de `.env.example` si no existe. Solo hay que editarlo si la API no está en `http://localhost:8000`.
 
@@ -51,7 +83,17 @@ cd panel  && npm install && npm run dev
 - `npm run lint` — ESLint
 - `npm run format` / `npm run format:check` — Prettier
 
-## Estructura de cada app
+## Estructura
+
+```
+docker-compose.yml   desarrollo (tienda + panel) y perfil "produccion"
+Dockerfile           imagen de produccion: build + Nginx
+docker/nginx/        configuracion de Nginx (rutas de tienda y panel)
+shared/              codigo compartido
+tienda/  panel/      una app React cada una
+```
+
+Dentro de cada app:
 
 ```
 src/

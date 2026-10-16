@@ -6,6 +6,11 @@ export const formatearMoneda = (monto) => moneda.format(Number(monto))
 
 export const formatearFecha = (iso) => fecha.format(new Date(iso))
 
+const dia = new Intl.DateTimeFormat('es-MX', { dateStyle: 'long' })
+
+// Solo la fecha, sin hora: "15 de octubre de 2026"
+export const formatearDia = (iso) => dia.format(new Date(iso))
+
 export const ETIQUETAS_ESTADO_PEDIDO = {
   pendiente_pago: 'Pendiente de pago',
   pagado: 'Pagado',

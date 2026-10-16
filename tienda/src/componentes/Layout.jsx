@@ -1,5 +1,7 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useSesion } from '../hooks/useSesion'
+import Header from './Header'
+import Footer from './Footer'
 
 export default function Layout() {
   const { usuario, cerrar } = useSesion()
@@ -12,9 +14,11 @@ export default function Layout() {
 
   return (
     <>
-      <header className="encabezado">
+      <div className='min-h-screen flex flex-col'>
+        <Header />
+        {/* <header className="encabezado">
         <Link to="/" className="marca">
-          CompraSegura
+          Amastore
         </Link>
         <nav>
           <NavLink to="/">Catalogo</NavLink>
@@ -33,10 +37,14 @@ export default function Layout() {
             </>
           )}
         </nav>
-      </header>
-      <main className="contenido">
-        <Outlet />
-      </main>
+      </header> */}
+        <main className="contenido flex-1">
+          <Outlet />
+        </main>
+
+        <Footer />
+      </div>
+
     </>
   )
 }

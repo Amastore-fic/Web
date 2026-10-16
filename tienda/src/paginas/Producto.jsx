@@ -12,16 +12,18 @@ export default function Producto() {
   const promedio = producto.calificaciones_avg_puntuacion
 
   return (
-    <article className="ficha">
-      <h1>{producto.titulo}</h1>
-      <p className="precio">{formatearMoneda(producto.precio)}</p>
+    <article className="flex flex-col gap-3 max-w-180 p-10 lg:pb-35 sm:pb-30">
+      <h1 className='text-2xl font-bold'>{producto.titulo}</h1>
+      <p className='font-semibold'>Descripcion del producto</p>
       <p>{producto.descripcion}</p>
-      <p className="secundario">
+      <p className="font-bold text-3xl">{formatearMoneda(producto.precio)}</p>
+      
+      <p className="text-gray-700">
         {producto.existencias} disponibles · {producto.categoria?.nombre}
       </p>
 
-      <section className="tarjeta">
-        <h2>Vendedor</h2>
+      <section className="rounded-md p-5 shadow-[0_0_8px_3px_rgba(0,0,0,0.12)]">
+        <h2 className='font-semibold'>Vendedor</h2>
         <p>
           <strong>{producto.vendedor.nombre_comercial}</strong>
           <span className="secundario"> · {producto.vendedor.codigo_vendedor}</span>
@@ -40,7 +42,7 @@ export default function Producto() {
       </section>
 
       {/* TODO: selector de cantidad + POST /carrito/items */}
-      <button type="button" disabled>
+      <button type="button" disabled className='bg-[#607ADB] p-3 rounded-lg text-white cursor-no-drop'>
         Agregar al carrito (pendiente)
       </button>
     </article>
