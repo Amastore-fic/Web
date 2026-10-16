@@ -1,4 +1,4 @@
-# CompraSegura · Web
+# Amastore · Web
 
 Dos aplicaciones React (Vite) independientes que comparten código vía `shared/`.
 
