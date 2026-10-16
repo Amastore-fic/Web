@@ -20,22 +20,31 @@ export function crearClienteApi({ baseUrl, sesion, alNoAutenticado }) {
     })
 
     const cabeceras = { Accept: 'application/json' }
-    if (cuerpo !== undefined) cabeceras['Content-Type'] = 'application/json'
+    
+    // VERIFICAR SI EL CUERPO ES UN FORMDATA
+    const esFormData = cuerpo instanceof FormData
+
+    if (cuerpo !== undefined) {
+      // Si no es FormData, aplicamos el comportamiento tradicional JSON
+      if (!esFormData) {
+        cabeceras['Content-Type'] = 'application/json'
+      }
+      // Si es FormData, NO asignamos 'Content-Type' para que el navegador cree el boundary automáticamente
+    }
+
     const token = sesion?.token()
     if (token) cabeceras.Authorization = `Bearer ${token}`
 
     const respuesta = await fetch(url, {
       method: metodo,
       headers: cabeceras,
-      body: cuerpo !== undefined ? JSON.stringify(cuerpo) : undefined,
+      // Si es FormData, lo pasamos directo; si no, aplicamos JSON.stringify
+      body: cuerpo !== undefined ? (esFormData ? cuerpo : JSON.stringify(cuerpo)) : undefined,
     })
 
     const datos = respuesta.status === 204 ? null : await respuesta.json().catch(() => null)
 
     if (!respuesta.ok) {
-      // 401 con sesion = la sesion vencio: se cierra y se manda al login.
-      // 401 sin sesion (por ejemplo, contrasena equivocada en el login) solo es un error
-      // que la pantalla debe mostrar; recargar la pagina lo borraria.
       if (respuesta.status === 401 && token) {
         sesion?.cerrar()
         alNoAutenticado?.()
