@@ -112,6 +112,11 @@ export const CAMPOS_PASSWORD = [
   },
 ]
 
+// Mismos campos sin la contrasena actual: pantalla de restablecer, tras entrar con una temporal
+export const CAMPOS_RESTABLECER = CAMPOS_PASSWORD.filter(
+  (campo) => campo.nombre !== 'password_actual'
+)
+
 export const ESTADOS_MEXICO = [
   'Aguascalientes',
   'Baja California',
