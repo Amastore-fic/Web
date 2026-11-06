@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { formatearMoneda } from '@shared/utilidades/formato'
 import { useProducto } from '../hooks/useCatalogo'
@@ -5,11 +6,50 @@ import { useProducto } from '../hooks/useCatalogo'
 export default function Producto() {
   const { id } = useParams()
   const { data: producto, isPending, error } = useProducto(id)
+  
+  const [cantidad, setCantidad] = useState(1)
+  const [agregando, setAgregando] = useState(false)
 
   if (isPending) return <p>Cargando...</p>
   if (error) return <p className="error">{error.message}</p>
 
   const promedio = producto.calificaciones_avg_puntuacion
+
+  const handleAgregarAlCarrito = async () => {
+    // 1. Verificamos primero si existe el token en el navegador
+    const token = localStorage.getItem('token')
+    if (!token) {
+      alert('Debes iniciar sesión como cliente para agregar productos al carrito.')
+      return
+    }
+
+    setAgregando(true)
+    try {
+      // 2. Hacemos la petición GET enviando el token en los headers de autorización
+      const response = await fetch(`http://127.0.0.1:8000/api/v1/carrito?id_producto=${producto.id}&cantidad=${cantidad}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      const datos = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(datos.message || 'Error al agregar al carrito')
+      }
+
+      alert('¡Producto agregado al carrito exitosamente!')
+      
+    } catch (err) {
+      console.error("Error al agregar al carrito:", err)
+      alert(`Hubo un problema: ${err.message}`)
+    } finally {
+      setAgregando(false)
+    }
+  }
 
   return (
     <article className="flex flex-col gap-3 max-w-180 p-10 lg:pb-35 sm:pb-30">
@@ -38,13 +78,43 @@ export default function Producto() {
             ? `${Number(promedio).toFixed(1)} de 5 (${producto.calificaciones_count} compras verificadas)`
             : 'Aun no tiene calificaciones.'}
         </p>
-        {/* TODO: listar GET /productos/{id}/calificaciones */}
       </section>
 
-      {/* TODO: selector de cantidad + POST /carrito/items */}
-      <button type="button" disabled className='bg-[#607ADB] p-3 rounded-lg text-white cursor-no-drop'>
-        Agregar al carrito (pendiente)
-      </button>
+      {/* Selector de cantidad y Botón de agregar */}
+      <div className="flex items-center gap-4 mt-4">
+        <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setCantidad(Math.max(1, cantidad - 1))}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 font-bold"
+            disabled={producto.existencias === 0}
+          >
+            -
+          </button>
+          <span className="px-4 py-2 font-semibold">{cantidad}</span>
+          <button
+            type="button"
+            onClick={() => setCantidad(Math.min(producto.existencias, cantidad + 1))}
+            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 font-bold"
+            disabled={cantidad >= producto.existencias || producto.existencias === 0}
+          >
+            +
+          </button>
+        </div>
+
+        <button 
+          type="button" 
+          onClick={handleAgregarAlCarrito}
+          disabled={producto.existencias === 0 || agregando}
+          className={`p-3 rounded-lg text-white font-semibold transition-colors
+            ${producto.existencias === 0 || agregando 
+              ? 'bg-gray-400 cursor-not-allowed' 
+              : 'bg-[#607ADB] hover:bg-blue-700 cursor-pointer'}`}
+        >
+          {agregando ? 'Agregando...' : producto.existencias === 0 ? 'Sin Stock' : 'Agregar al carrito'}
+        </button>
+      </div>
+      
     </article>
   )
 }

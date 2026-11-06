@@ -130,7 +130,7 @@ export default function Header() {
             </header>
 
             {/* Nav de categorías */}
-            <nav nav className="bg-[#242939] text-gray-200 text-[13px] lg:text-[14px] px-3.5 sm:px-5 lg:px-8 py-2.5 flex gap-3 sm:gap-4 lg:gap-6 overflow-x-auto">
+           <nav className="bg-[#242939] text-gray-200 text-[13px] lg:text-[14px] px-3.5 sm:px-5 lg:px-8 py-2.5 flex gap-3 sm:gap-4 lg:gap-6 overflow-x-auto">
                 <Link
                     to="/"
                     className={`whitespace-nowrap ${!categoriaActiva ? 'text-white font-semibold' : ''}`}
