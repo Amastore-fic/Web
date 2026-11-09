@@ -11,6 +11,7 @@ import DatosPersonales from './paginas/cuenta/DatosPersonales'
 import MiCuenta from './paginas/cuenta/MiCuenta'
 import MiNegocio from './paginas/cuenta/MiNegocio'
 import Seguridad from './paginas/cuenta/Seguridad'
+import RestablecerPassword from './paginas/RestablecerPassword'
 import RegistroVendedor from './paginas/RegistroVendedor'
 import MisProductos from './paginas/vendedor/MisProductos'
 import Ventas from './paginas/vendedor/Ventas'
@@ -44,6 +45,10 @@ export default function App() {
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
           <Route path="categorias" element={<Categorias />} />
+        </Route>
+
+        <Route path="restablecer-password" element={<RutaPorRol />}>
+          <Route index element={<RestablecerPassword />} />
         </Route>
 
         <Route path="perfil" element={<RutaPorRol />}>

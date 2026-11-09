@@ -1,136 +1,98 @@
 import { useState } from 'react'
-import { Link, useSearchParams, useNavigate } from 'react-router-dom'
-import { AlertaError, Campo, TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
+import { useMutation } from '@tanstack/react-query'
+import { Link, Navigate } from 'react-router-dom'
+import { CAMPOS_RESTABLECER, valoresDe } from '@shared/perfil/campos'
+import { puedeCambiarSinLaActual, restablecerPassword } from '@shared/perfil/perfil'
+import { api } from '../api'
+import { TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
+import {
+  AvisoFormulario,
+  CamposFormulario,
+  RequisitosPassword,
+} from '../componentes/perfil/PiezasPerfil'
+import { useFormulario } from '../hooks/useFormulario'
+import { useSesion } from '../hooks/useSesion'
 
+const VACIOS = valoresDe(CAMPOS_RESTABLECER, {})
+
+// Cambio directo despues de entrar con una contrasena temporal: no pide la actual.
+// Terminado ese tiempo, el cambio se hace en /perfil/seguridad.
 export default function RestablecerPassword() {
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const { usuario, actualizarUsuario } = useSesion()
+  const formulario = useFormulario(CAMPOS_RESTABLECER, VACIOS)
+  const [verPassword, setVerPassword] = useState(false)
+  const [listo, setListo] = useState(false)
 
-  const token = searchParams.get('token')
-  const correo = searchParams.get('correo') || ''
+  const guardar = useMutation({
+    mutationFn: (datos) => restablecerPassword(api, datos),
+    onSuccess: (respuesta) => {
+      setListo(true)
+      actualizarUsuario(respuesta.usuario)
+    },
+    onError: formulario.fallo,
+  })
 
-  const [password, setPassword] = useState('')
-  const [passwordConfirmation, setPasswordConfirmation] = useState('')
-  const [errores, setErrores] = useState({})
-  const [error, setError] = useState(null)
-  const [enviando, setEnviando] = useState(false)
-  const [exito, setExito] = useState(false)
+  if (!listo && !puedeCambiarSinLaActual(usuario)) {
+    return <Navigate to="/perfil/seguridad" replace />
+  }
 
-  async function enviar(e) {
+  function enviar(e) {
     e.preventDefault()
-    setError(null)
+    if (!formulario.validar()) return
+    guardar.mutate(formulario.datos)
+  }
 
-    const nuevos = {}
-    if (!password) {
-      nuevos.password = 'La contraseña es obligatoria.'
-    } else if (password.length < 8) {
-      nuevos.password = 'Debe tener al menos 8 caracteres.'
-    }
-
-    if (password !== passwordConfirmation) {
-      nuevos.passwordConfirmation = 'Las contraseñas no coinciden.'
-    }
-
-    setErrores(nuevos)
-    if (Object.keys(nuevos).length > 0) return
-
-    if (!token || !correo) {
-      setError('El enlace de recuperación es inválido o ha expirado.')
-      return
-    }
-
-    setEnviando(true)
-    try {
-      // Petición real a tu API de Laravel
-      const respuesta = await fetch('http://localhost:8000/api/v1/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          token,
-          correo, 
-          password,
-          password_confirmation: passwordConfirmation,
-        }),
-      })
-
-      const datos = await respuesta.json()
-
-      if (!respuesta.ok) {
-        throw new Error(datos.message || 'No se pudo restablecer la contraseña.')
-      }
-
-      setExito(true)
-    } catch (err) {
-      setError(err.message || 'Ocurrió un error al procesar la solicitud.')
-    } finally {
-      setEnviando(false)
-    }
+  if (listo) {
+    return (
+      <TarjetaAuth titulo="Contraseña actualizada">
+        <div className="flex flex-col gap-4">
+          <AvisoFormulario
+            mensaje={{
+              tipo: 'exito',
+              texto: 'Listo: usa tu nueva contraseña la próxima vez que entres.',
+            }}
+          />
+          <Link to="/" className={`${claseBotonPrincipal} text-center`}>
+            Continuar
+          </Link>
+        </div>
+      </TarjetaAuth>
+    )
   }
 
   return (
     <TarjetaAuth
-      titulo="Restablecer contraseña"
-      subtitulo="Ingresa tu nueva contraseña para acceder a tu cuenta."
+      titulo="Cambiar contraseña"
+      subtitulo="Elige una contraseña que puedas recordar. Ya no necesitarás la del correo."
     >
-      {exito ? (
-        <div className="flex flex-col gap-4 text-center">
-          <div className="p-4 bg-green-50 text-green-700 rounded-md text-sm">
-            ¡Tu contraseña se ha restablecido con éxito! Ya puedes iniciar sesión con tu nueva clave.
-          </div>
-          <button 
-            type="button"
-            onClick={() => navigate('/login')} 
-            className={`${claseBotonPrincipal} inline-block text-center`}
-          >
-            Ir a iniciar sesión
-          </button>
-        </div>
-      ) : (
-        <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
-          <Campo
-            id="reset-password"
-            etiqueta="Nueva contraseña"
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value)
-              setErrores((previos) => ({ ...previos, password: undefined }))
-            }}
-            error={errores.password}
-          />
+      <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
+        <CamposFormulario
+          prefijo="restablecer"
+          campos={CAMPOS_RESTABLECER}
+          formulario={formulario}
+          verPassword={verPassword}
+        />
 
-          <Campo
-            id="reset-password-confirmation"
-            etiqueta="Confirmar nueva contraseña"
-            type="password"
-            autoComplete="new-password"
-            placeholder="••••••••"
-            value={passwordConfirmation}
-            onChange={(e) => {
-              setPasswordConfirmation(e.target.value)
-              setErrores((previos) => ({ ...previos, passwordConfirmation: undefined }))
-            }}
-            error={errores.passwordConfirmation}
-          />
+        <button
+          type="button"
+          onClick={() => setVerPassword((v) => !v)}
+          className="self-start text-sm text-gray-600 hover:underline"
+        >
+          {verPassword ? 'Ocultar contraseñas' : 'Mostrar contraseñas'}
+        </button>
 
-          {error && <AlertaError>{error}</AlertaError>}
+        <RequisitosPassword password={formulario.datos.password} />
 
-          <button type="submit" disabled={enviando} className={`${claseBotonPrincipal} mt-2`}>
-            {enviando ? 'Guardando...' : 'Restablecer contraseña'}
-          </button>
+        <AvisoFormulario mensaje={formulario.mensaje} />
 
-          <p className="text-center text-sm text-gray-600">
-            <Link to="/login" className="font-semibold text-[#607ADB] hover:underline">
-              Cancelar y volver al login
-            </Link>
-          </p>
-        </form>
-      )}
+        <button type="submit" disabled={guardar.isPending} className={claseBotonPrincipal}>
+          {guardar.isPending ? 'Guardando...' : 'Cambiar contraseña'}
+        </button>
+
+        <Link to="/" className="text-center text-sm text-gray-600 hover:underline">
+          Ahora no
+        </Link>
+      </form>
     </TarjetaAuth>
   )
 }

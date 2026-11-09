@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { validarCorreo } from '@shared/utilidades/validaciones'
+import { api } from '../api'
 import { AlertaError, Campo, TarjetaAuth, claseBotonPrincipal } from '../componentes/FormularioAuth'
 
 export default function RecuperarPassword() {
@@ -23,25 +24,10 @@ export default function RecuperarPassword() {
 
     setEnviando(true)
     try {
-      const respuesta = await fetch('http://localhost:8000/api/v1/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ correo: correo.trim() }),
-      })
-
-      const datos = await respuesta.json()
-
-      if (!respuesta.ok) {
-        throw new Error(datos.message || 'Ocurrió un error al enviar el correo.')
-      }
-
-      // Si todo sale bien
+      await api.post('/auth/forgot-password', { correo: correo.trim() })
       setExito(true)
     } catch (err) {
-      setError(err.message || 'No se pudo conectar con el servidor.')
+      setError(err.estado ? err.message : 'No se pudo conectar con el servidor.')
     } finally {
       setEnviando(false)
     }
@@ -50,12 +36,12 @@ export default function RecuperarPassword() {
   return (
     <TarjetaAuth
       titulo="Recuperar contraseña"
-      subtitulo="Te enviaremos un enlace para restablecer tu acceso."
+      subtitulo="Te enviaremos una contraseña temporal por correo. Tu contraseña actual seguirá funcionando."
     >
       {exito ? (
         <div className="flex flex-col gap-4 text-center">
           <div className="p-4 bg-green-50 text-green-700 rounded-md text-sm">
-            ¡Correo enviado! Revisa tu bandeja de entrada y sigue las instrucciones para cambiar tu contraseña.
+            Si el correo está registrado, te enviamos una contraseña temporal. Revisa tu bandeja de entrada: vence en 10 minutos.
           </div>
           <Link to="/login" className={`${claseBotonPrincipal} inline-block text-center`}>
             Volver a iniciar sesión
@@ -80,7 +66,7 @@ export default function RecuperarPassword() {
           {error && <AlertaError>{error}</AlertaError>}
 
           <button type="submit" disabled={enviando} className={`${claseBotonPrincipal} mt-2`}>
-            {enviando ? 'Enviando...' : 'Enviar enlace de recuperación'}
+            {enviando ? 'Enviando...' : 'Enviar contraseña temporal'}
           </button>
 
           <p className="text-center text-sm text-gray-600">
