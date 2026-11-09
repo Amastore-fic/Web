@@ -1,18 +1,32 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { formatearMoneda } from '@shared/utilidades/formato'
+import { AlertaError, AlertaExito } from '../componentes/FormularioAuth'
 import { useProducto } from '../hooks/useCatalogo'
+import { mensajeCarrito, useAgregarAlCarrito } from '../hooks/useCarrito'
+import { useSesion } from '../hooks/useSesion'
 
 export default function Producto() {
   const { id } = useParams()
+  const location = useLocation()
+  const { usuario } = useSesion()
   const { data: producto, isPending, error } = useProducto(id)
   const [imagenFalla, setImagenFalla] = useState(false)
+  const [cantidad, setCantidad] = useState(1)
+  const agregar = useAgregarAlCarrito()
 
   if (isPending) return <p>Cargando...</p>
   if (error) return <p className="error">{error.message}</p>
 
   const promedio = producto.calificaciones_avg_puntuacion
   const mostrarImagen = producto.imagen_url && !imagenFalla
+  const sinExistencias = producto.existencias === 0
+  const esCliente = usuario?.rol === 'cliente'
+
+  function cambiarCantidad(nueva) {
+    setCantidad(Math.min(Math.max(1, nueva), producto.existencias))
+    agregar.reset()
+  }
 
   return (
     <article className="grid max-w-5xl gap-8 p-10 sm:pb-30 md:grid-cols-2 lg:pb-35">
@@ -58,14 +72,68 @@ export default function Producto() {
           {/* TODO: listar GET /productos/{id}/calificaciones */}
         </section>
 
-        {/* TODO: selector de cantidad + POST /carrito/items */}
-        <button
-          type="button"
-          disabled
-          className="cursor-no-drop rounded-lg bg-[#607ADB] p-3 text-white"
-        >
-          Agregar al carrito (pendiente)
-        </button>
+        {!usuario && (
+          <Link
+            to="/login"
+            state={{ desde: location.pathname }}
+            className="mt-4 rounded-lg bg-[#607ADB] p-3 text-center font-semibold text-white hover:bg-[#4f68c4]"
+          >
+            Inicia sesión para comprar
+          </Link>
+        )}
+
+        {esCliente && (
+          <>
+            <div className="mt-4 flex flex-wrap items-center gap-4">
+              <div className="flex items-center overflow-hidden rounded-lg border border-gray-300">
+                <button
+                  type="button"
+                  onClick={() => cambiarCantidad(cantidad - 1)}
+                  disabled={sinExistencias || cantidad <= 1}
+                  aria-label="Quitar una pieza"
+                  className="cursor-pointer bg-gray-100 px-4 py-2 font-bold hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  -
+                </button>
+                <span className="px-4 py-2 font-semibold" aria-live="polite">
+                  {cantidad}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => cambiarCantidad(cantidad + 1)}
+                  disabled={sinExistencias || cantidad >= producto.existencias}
+                  aria-label="Agregar una pieza"
+                  className="cursor-pointer bg-gray-100 px-4 py-2 font-bold hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => agregar.mutate({ idProducto: producto.id, cantidad })}
+                disabled={sinExistencias || agregar.isPending}
+                className="cursor-pointer rounded-lg bg-[#607ADB] p-3 font-semibold text-white transition-colors hover:bg-[#4f68c4] disabled:cursor-not-allowed disabled:bg-gray-400"
+              >
+                {agregar.isPending
+                  ? 'Agregando...'
+                  : sinExistencias
+                    ? 'Sin existencias'
+                    : 'Agregar al carrito'}
+              </button>
+            </div>
+
+            {agregar.isSuccess && (
+              <AlertaExito>
+                Se agregó a tu carrito.{' '}
+                <Link to="/carrito" className="font-semibold underline">
+                  Ver carrito
+                </Link>
+              </AlertaExito>
+            )}
+            {agregar.isError && <AlertaError>{mensajeCarrito(agregar.error)}</AlertaError>}
+          </>
+        )}
       </div>
     </article>
   )
