@@ -4,6 +4,7 @@ import { CAMPOS_PASSWORD, valoresDe } from '@shared/perfil/campos'
 import { cambiarPassword } from '@shared/perfil/perfil'
 import { api } from '../../api'
 import { useFormulario } from '../../hooks/useFormulario'
+import { useSesion } from '../../hooks/useSesion'
 import {
   AvisoFormulario,
   CamposFormulario,
@@ -16,12 +17,14 @@ const VACIOS = valoresDe(CAMPOS_PASSWORD, {})
 
 // Contrasena actual + nueva dos veces, igual que la pantalla de restablecer. PUT /auth/password
 export default function SeccionPassword() {
+  const { actualizarUsuario } = useSesion()
   const formulario = useFormulario(CAMPOS_PASSWORD, VACIOS)
   const [verPassword, setVerPassword] = useState(false)
 
   const guardar = useMutation({
     mutationFn: (datos) => cambiarPassword(api, datos),
-    onSuccess: () => {
+    onSuccess: (respuesta) => {
+      actualizarUsuario(respuesta.usuario)
       formulario.reiniciar(VACIOS)
       setVerPassword(false)
       formulario.setMensaje({ tipo: 'exito', texto: 'Tu contraseña se cambió.' })

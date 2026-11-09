@@ -6,7 +6,10 @@
 //   PUT    /auth/perfil          * -> { nombre, apellido, correo, telefono } y, si es vendedor,
 //                                     { nombre_comercial, sucursal, descripcion }. Solo se
 //                                     cambian los campos enviados. Responde el usuario actualizado.
-//   PUT    /auth/password        * -> { password_actual, password, password_confirmation }
+//   PUT    /auth/password          -> { password_actual, password, password_confirmation }
+//   PUT    /auth/password/restablecer -> { password, password_confirmation }. Sin la actual, solo
+//                                     mientras este vigente usuario.cambio_password_hasta.
+//   Ambos responden { message, usuario }.
 //   GET    /direcciones            -> direcciones del cliente
 //   POST   /direcciones            -> crea una direccion
 //   PUT    /direcciones/{id}     * -> edita una direccion propia
@@ -17,6 +20,15 @@ import { mensajeApi } from '../utilidades/validaciones'
 export const obtenerPerfil = (api) => api.get('/auth/perfil')
 export const actualizarPerfil = (api, datos) => api.put('/auth/perfil', datos)
 export const cambiarPassword = (api, datos) => api.put('/auth/password', datos)
+export const restablecerPassword = (api, datos) => api.put('/auth/password/restablecer', datos)
+
+// Quien acaba de entrar con una contrasena temporal puede cambiarla sin escribir la actual.
+// Solo decide que se muestra: quien lo hace valer es la API.
+export function puedeCambiarSinLaActual(usuario) {
+  return (
+    Boolean(usuario?.cambio_password_hasta) && new Date(usuario.cambio_password_hasta) > new Date()
+  )
+}
 
 export const listarDirecciones = (api) => api.get('/direcciones')
 export const crearDireccion = (api, datos) => api.post('/direcciones', datos)

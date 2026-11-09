@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useSesion } from '../hooks/useSesion'
 import Header from './Header'
 import Footer from './Footer'
+import AvisoCambioPassword from './AvisoCambioPassword'
 
 export default function Layout() {
   const { usuario, cerrar } = useSesion()
@@ -16,6 +17,7 @@ export default function Layout() {
     <>
       <div className='min-h-screen flex flex-col'>
         <Header />
+        <AvisoCambioPassword />
         {/* <header className="encabezado">
         <Link to="/" className="marca">
           Amastore

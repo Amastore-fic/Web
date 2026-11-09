@@ -31,9 +31,9 @@ export default function App() {
         <Route path="registro" element={<Registro />} />
 
         <Route path="recuperar-password" element={<RecuperarPassword />} />
-        <Route path="restablecer-password" element={<RestablecerPassword />} />
 
         <Route element={<RutaProtegida />}>
+          <Route path="restablecer-password" element={<RestablecerPassword />} />
           <Route path="carrito" element={<Carrito />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="pedidos" element={<Pedidos />} />
