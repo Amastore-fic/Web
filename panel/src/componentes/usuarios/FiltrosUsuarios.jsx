@@ -1,9 +1,9 @@
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
- 
+
 const claseControl =
   'h-[48px] w-full rounded-md border border-gray-400 bg-white px-4 text-[15px] text-gray-700 placeholder:text-gray-500 focus:border-panel-acento focus:outline-none focus:ring-2 focus:ring-panel-acento/40'
- 
+
 function Selector({ valor, onChange, etiqueta, opciones }) {
   return (
     <div className="relative lg:w-[200px]">
@@ -23,20 +23,21 @@ function Selector({ valor, onChange, etiqueta, opciones }) {
     </div>
   )
 }
- 
+
 const OPCIONES_ROL = [
   { valor: '', texto: 'Todos los roles' },
   { valor: 'cliente', texto: 'Clientes' },
   { valor: 'vendedor', texto: 'Vendedores' },
   { valor: 'administrador', texto: 'Administradores' },
+  { valor: 'superadmin', texto: 'Superadministradores' },
 ]
- 
+
 const OPCIONES_ESTADO = [
   { valor: '', texto: 'Todos los estados' },
   { valor: '1', texto: 'Activos' },
   { valor: '0', texto: 'Bloqueados' },
 ]
- 
+
 export default function FiltrosUsuarios({ busqueda, rol, estado, onBusqueda, onRol, onEstado }) {
   return (
     <div className="flex gap-4 p-5 flex-row">

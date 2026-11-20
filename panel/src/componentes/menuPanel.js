@@ -12,7 +12,10 @@ export const MENU = {
   ],
 }
 
+MENU.superadmin = MENU.administrador
+
 export const NOMBRE_SECCION = {
   vendedor: 'Vendedores',
   administrador: 'Administración',
+  superadmin: 'Administración',
 }

@@ -5,9 +5,11 @@ import Paginacion from '../../componentes/usuarios/Paginacion'
 import TablaUsuarios from '../../componentes/usuarios/TablaUsuarios'
 import Toast from '../../componentes/usuarios/Toast'
 import { useCambiarEstadoUsuario, useListaUsuarios } from '../../hooks/useUsuariosAdmin'
+import { useSesion } from '../../hooks/useSesion'
 
 // GET /admin/usuarios y PATCH /admin/usuarios/{id}/estado
 export default function Usuarios() {
+  const { usuario: sesion } = useSesion()
   const [busqueda, setBusqueda] = useState('')
   const [buscar, setBuscar] = useState('') // busqueda con retardo para no consultar en cada tecla
   const [rol, setRol] = useState('')
@@ -71,6 +73,7 @@ export default function Usuarios() {
         />
         <TablaUsuarios
           usuarios={data?.data ?? []}
+          sesion={sesion}
           cargando={isLoading || (isFetching && !data)}
           error={error}
           onAccion={setSeleccionado}

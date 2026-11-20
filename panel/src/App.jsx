@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { esAdministrador } from '@shared/sesion/traspaso'
 import Layout from './componentes/Layout'
 import RutaPorRol from './componentes/RutaPorRol'
 import { useSesion } from './hooks/useSesion'
@@ -23,7 +24,7 @@ function Inicio() {
   if (!usuario) return <Navigate to="/login" replace />
   return (
     <Navigate
-      to={usuario.rol === 'administrador' ? '/admin/usuarios' : '/vendedor/productos'}
+      to={esAdministrador(usuario.rol) ? '/admin/usuarios' : '/vendedor/productos'}
       replace
     />
   )

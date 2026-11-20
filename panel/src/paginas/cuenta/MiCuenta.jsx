@@ -71,6 +71,8 @@ const OPCIONES = {
   ],
 }
 
+OPCIONES.superadmin = OPCIONES.administrador
+
 // Mi cuenta de vendedor o administrador: cada tarjeta lleva a su propia pantalla
 export default function MiCuenta() {
   const { usuario } = useSesion()
