@@ -39,6 +39,7 @@ export const ETIQUETAS_ROL = {
   cliente: 'Cliente',
   vendedor: 'Vendedor',
   administrador: 'Administrador',
+  superadmin: 'Superadministrador',
 }
 
 // Errores de validacion de la API ({ campo: ['mensaje'] }) a { campo: 'mensaje' }

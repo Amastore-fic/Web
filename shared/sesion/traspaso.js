@@ -11,7 +11,10 @@ const CLAVE = 'sesion'
 
 // Que roles usa cada app
 export const ROLES_TIENDA = ['cliente']
-export const ROLES_PANEL = ['vendedor', 'administrador']
+export const ROLES_PANEL = ['vendedor', 'administrador', 'superadmin']
+
+// El superadmin entra a todo lo del administrador (la API aplica la misma regla)
+export const esAdministrador = (rol) => rol === 'administrador' || rol === 'superadmin'
 
 export function urlConSesion(urlDestino, token) {
   return `${urlDestino}#${CLAVE}=${encodeURIComponent(token)}`

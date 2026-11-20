@@ -1,10 +1,10 @@
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import { InsigniaEstado, InsigniaRol, Iniciales } from './Insignias'
- 
+
 const th = 'px-[30px] py-4 text-left text-[16px] font-medium text-gray-700'
 const td = 'px-[30px] py-4 align-middle'
- 
+
 function fecha(iso) {
   return new Date(iso).toLocaleDateString('es-MX', {
     day: '2-digit',
@@ -12,11 +12,18 @@ function fecha(iso) {
     year: 'numeric',
   })
 }
- 
-function Accion({ usuario, onAccion }) {
-  // A los administradores no se les puede bloquear ni desbloquear
-  if (usuario.rol === 'administrador') return null
- 
+
+// Misma regla que la API: al superadmin no lo bloquea nadie, y a un administrador
+// solo lo bloquea un superadmin
+function puedeCambiarEstado(usuario, sesion) {
+  if (usuario.id === sesion?.id || usuario.rol === 'superadmin') return false
+  if (usuario.rol === 'administrador') return sesion?.rol === 'superadmin'
+  return true
+}
+
+function Accion({ usuario, sesion, onAccion }) {
+  if (!puedeCambiarEstado(usuario, sesion)) return null
+
   return usuario.activo ? (
     <button
       type="button"
@@ -37,18 +44,28 @@ function Accion({ usuario, onAccion }) {
     </button>
   )
 }
- 
-export default function TablaUsuarios({ usuarios, cargando, error, onAccion }) {
+
+export default function TablaUsuarios({ usuarios, sesion, cargando, error, onAccion }) {
   return (
     <div className="overflow-x-auto" aria-busy={cargando}>
       <table className="w-full min-w-[820px] border-collapse">
         <thead className="bg-[#F3F6F5]">
           <tr>
-            <th scope="col" className={th}>Usuario</th>
-            <th scope="col" className={th}>Rol</th>
-            <th scope="col" className={th}>Estado</th>
-            <th scope="col" className={th}>Registro</th>
-            <th scope="col" className={`${th} text-right`}>Acción</th>
+            <th scope="col" className={th}>
+              Usuario
+            </th>
+            <th scope="col" className={th}>
+              Rol
+            </th>
+            <th scope="col" className={th}>
+              Estado
+            </th>
+            <th scope="col" className={th}>
+              Registro
+            </th>
+            <th scope="col" className={`${th} text-right`}>
+              Acción
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -65,11 +82,15 @@ export default function TablaUsuarios({ usuarios, cargando, error, onAccion }) {
                   </div>
                 </div>
               </td>
-              <td className={td}><InsigniaRol rol={u.rol} /></td>
-              <td className={td}><InsigniaEstado activo={u.activo} /></td>
+              <td className={td}>
+                <InsigniaRol rol={u.rol} />
+              </td>
+              <td className={td}>
+                <InsigniaEstado activo={u.activo} />
+              </td>
               <td className={`${td} text-[17px] text-black`}>{fecha(u.created_at)}</td>
               <td className={`${td} text-right`}>
-                <Accion usuario={u} onAccion={onAccion} />
+                <Accion usuario={u} sesion={sesion} onAccion={onAccion} />
               </td>
             </tr>
           ))}
