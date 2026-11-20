@@ -4,6 +4,7 @@ import RutaPorRol from './componentes/RutaPorRol'
 import { useSesion } from './hooks/useSesion'
 import Categorias from './paginas/admin/Categorias'
 import PedidosAdmin from './paginas/admin/Pedidos'
+import ProductosAdmin from './paginas/admin/Productos'
 import Usuarios from './paginas/admin/Usuarios'
 import Login from './paginas/Login'
 import NoEncontrado from './paginas/NoEncontrado'
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="admin" element={<RutaPorRol rol="administrador" />}>
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="pedidos" element={<PedidosAdmin />} />
+          <Route path="productos" element={<ProductosAdmin />} />
           <Route path="categorias" element={<Categorias />} />
         </Route>
 

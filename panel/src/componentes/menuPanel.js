@@ -6,6 +6,7 @@ export const MENU = {
   ],
   administrador: [
     { a: '/admin/usuarios', texto: 'Usuarios' },
+    { a: '/admin/productos', texto: 'Productos' },
     { a: '/admin/pedidos', texto: 'Pedidos' },
     { a: '/admin/categorias', texto: 'Categorías' },
   ],
